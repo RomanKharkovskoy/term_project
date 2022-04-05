@@ -1,12 +1,14 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ContentType
-from matplotlib.pyplot import text
 from top_secret import token
 import logging
 import sqlite3
+from screenshot_script import take_screenshot
+import os
 
 bot = Bot(token = token)
 dp = Dispatcher(bot)
+count = 0
 
 logging.basicConfig(level=logging.INFO)
 
@@ -28,20 +30,26 @@ dp.register_message_handler(goodby, commands='by')
 
 @dp.message_handler(content_types=[ContentType.VIDEO_NOTE])
 async def vedio_machine(message: types.Message):
-    await message.answer('Скачиваю полученный файл')
-    destination = 'cache'
-    await message.video_note.download(destination_dir=destination)
-    await message.answer('Скачал')
+    # await message.answer('Скачиваю полученный файл')
+    destination = f'cache/{message.from_user.username}.mp4'
+    await message.video_note.download(destination_file=destination)
+    # await message.answer('Скачал. Ищи себя в прошмандовках Азербайджана)')
+    take_screenshot(message.from_user.username)
+    # os.remove('cache/video.mp4')
 
 @dp.message_handler(content_types=['text'])
 async def get_text_messages(message: types.Message):
     if message.text.lower() == "привет":
-        await message.answer('Привет дружище!')
+        await message.answer('Привет дружище! Добавил тебя в нашу базу данных :) \n Теперь отправь пожалуйста мне кружок, в котором будет видно твоё милое лицо)')
     us_id = message.from_user.id
     username = message.from_user.username
     db_table_val(username=username, user_id=us_id)
+    
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
+
+
+
 
 

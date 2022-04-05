@@ -1,11 +1,11 @@
 from cv2 import cv2
 import os
 
-def take_screenshot(qwerty):
+def take_screenshot(user_name):
     cap = cv2.VideoCapture("cache/video.mp4")#Принимает в качестве параметра адрес на видео
     count = 0
-    if not os.path.exists(f'{qwerty}'):#это нужно будет усовершенствовать и сделать папки для каждого профиля в данной директории
-        os.mkdir(f'{qwerty}')
+    if not os.path.exists(f'{user_name}'):#это нужно будет усовершенствовать и сделать папки для каждого профиля в данной директории
+        os.mkdir(f'{user_name}')
 
     while True:
         ret, frame = cap.read()
@@ -18,7 +18,7 @@ def take_screenshot(qwerty):
             cv2.waitKey(50)
 
             if frame_id % 10 == 0: #тут каждый десятый кадр скриншотится(позже сделать зависимость от fps)
-                cv2.imwrite(f"{qwerty}/{count}.jpg", frame)
+                cv2.imwrite(f"{user_name}/{count}.jpg", frame)
                 print(f"Сделал скриншот {count}")
                 count += 1 
         else:

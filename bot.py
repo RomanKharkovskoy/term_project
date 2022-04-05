@@ -30,12 +30,13 @@ dp.register_message_handler(goodby, commands='by')
 
 @dp.message_handler(content_types=[ContentType.VIDEO_NOTE])
 async def vedio_machine(message: types.Message):
-    # await message.answer('Скачиваю полученный файл')
-    destination = f'cache/{message.from_user.username}.mp4'
+    await message.answer('Скачиваю полученный файл')
+    destination = 'cache/video.mp4'
     await message.video_note.download(destination_file=destination)
-    # await message.answer('Скачал. Ищи себя в прошмандовках Азербайджана)')
+    await message.answer('Скачал. Ищи себя в прошмандовках Азербайджана)')
+    os.remove(f'{message.from_user.username}')
     take_screenshot(message.from_user.username)
-    # os.remove('cache/video.mp4')
+    os.remove('cache/video.mp4')
 
 @dp.message_handler(content_types=['text'])
 async def get_text_messages(message: types.Message):

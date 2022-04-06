@@ -1,58 +1,74 @@
 import face_recognition
-from PIL import Image, ImageDraw
+import cv2
 import time
 
-def face_rec():
-    first_face_img = face_recognition.load_image_file("img/vitya.jpg")
-    first_face_location = face_recognition.face_locations(first_face_img)
 
-    print(first_face_location)
-    print(len(first_face_location))
-
-    pil_img1 = Image.fromarray(first_face_img)
-    drow1 = ImageDraw.Draw(pil_img1)
-
-    for (top, right, bottom, left) in first_face_location:
-        drow1.rectangle(((left, top), (right, bottom)), outline=(9, 254, 7), width=4)
-
-    del drow1
-    pil_img1.save("img/new_1.jpg")
-
-
-def extracting_faces(img_path):
+def save_src():
+    video_capture = cv2.VideoCapture("img/video_vitya.mp4")
     count = 0
-    faces = face_recognition.load_image_file(img_path)
-    faces_locations = face_recognition.face_locations(faces)
 
-    for face_location in faces_locations:
-        top, right, bottom, left = face_location
+    while True:
+        frame_id = int(round(video_capture.get(1)))
+        _, frame = video_capture.read()
+        small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+        rgb_small_frame = small_frame[:, :, ::-1]
+        first_face_location = face_recognition.face_locations(rgb_small_frame)
+        if len(first_face_location) == 0:
+            continue
+        else:
+            if count < 10:
+                if count == 3 or count == 6 or count == 9:
+                    cv2.imwrite(f"img/scr{count}.jpg", frame)
+                    print(frame_id)
+                    print("face found")
+                count += 1
+            else:
+                break
 
-        face_img = faces[top:bottom, left:right]
-        pil_img = Image.fromarray(face_img)
-        pil_img.save(f"img/{count}_face_img.jpg")
-        count += 1
-    return f"found {count} face(s)"
 
+def compare_faces():
+    standard = face_recognition.load_image_file("img/0_face_img.jpg")
+    standard_encodings = face_recognition.face_encodings(standard)[0]
 
-def compare_faces(img1_path, img2_path):
-    img1 = face_recognition.load_image_file(img1_path)
-    img1_encodings = face_recognition.face_encodings(img1)[0]
-    # print(img1_encodings)
+    img1 = face_recognition.load_image_file("img/scr9.jpg")
+    face_location_1 = face_recognition.face_locations(img1)
 
-    img2 = face_recognition.load_image_file(img2_path)
-    img2_encodings = face_recognition.face_encodings(img2)[0]
+    if face_location_1 != 0:
+        img1_encodings = face_recognition.face_encodings(img1)[0]
+        result = face_recognition.compare_faces([standard_encodings], img1_encodings)
+        print(result)
 
-    result = face_recognition.compare_faces([img1_encodings], img2_encodings)
-    print(result)
+    else:
+        img2 = face_recognition.load_image_file("img/scr6.jpg")
+        face_location_2 = face_recognition.face_locations(img2)
+
+        if face_location_2 != 0:
+            img2_encodings = face_recognition.face_encodings(img2)[0]
+            result = face_recognition.compare_faces([standard_encodings], img2_encodings)
+            print(result)
+
+        else:
+            img3 = face_recognition.load_image_file("img/scr3.jpg")
+            face_location_3 = face_recognition.face_locations(img3)
+
+            if face_location_3 != 0:
+                img3_encodings = face_recognition.face_encodings(img3)[0]
+                result = face_recognition.compare_faces([standard_encodings], img3_encodings)
+                print(result)
 
 
 def main():
     start_time = time.time()
-    # face_rec()
-    # print(extracting_faces("img/vova.jpg"))
-    compare_faces("img/vova.jpg", "img/vova1.jpg")
+    save_src()
+    compare_faces()
     print("--- %s seconds ---" % (time.time() - start_time))
 
 
 if __name__ == '__main__':
     main()
+
+
+
+
+
+

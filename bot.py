@@ -12,11 +12,11 @@ count = 0
 
 logging.basicConfig(level=logging.INFO)
 
-conn = sqlite3.connect('db/test.db', check_same_thread=False)
+conn = sqlite3.connect('db/table.db', check_same_thread=False)
 cursor = conn.cursor()
 
-def db_table_val(username: str, user_id: int):
-    cursor.execute('INSERT INTO test (username, user_id) VALUES (?, ?)', (username, user_id))
+def db_table_val(username: str, user_id: int, photo_dir: str):
+    cursor.execute('INSERT INTO users (username, user_id, photo_dir) VALUES (?, ?, ?)', (username, user_id, photo_dir))
     conn.commit()
 
 @dp.message_handler(commands='start')
@@ -32,6 +32,10 @@ dp.register_message_handler(goodby, commands='by')
 async def vedio_machine(message: types.Message):
     await message.answer('Скачиваю полученный файл')
     destination = 'cache/video.mp4'
+    us_id = message.from_user.id
+    username = message.from_user.username
+    photo_dir = f'{message.from_user.username}'
+    db_table_val(username=username, user_id=us_id, photo_dir=photo_dir)
     await message.video_note.download(destination_file=destination)
     await message.answer('Скачал. Ищи себя в прошмандовках Азербайджана)')
     os.remove(f'{message.from_user.username}')
@@ -42,9 +46,7 @@ async def vedio_machine(message: types.Message):
 async def get_text_messages(message: types.Message):
     if message.text.lower() == "привет":
         await message.answer('Привет дружище! Добавил тебя в нашу базу данных :) \n Теперь отправь пожалуйста мне кружок, в котором будет видно твоё милое лицо)')
-    us_id = message.from_user.id
-    username = message.from_user.username
-    db_table_val(username=username, user_id=us_id)
+    
     
 
 if __name__ == '__main__':

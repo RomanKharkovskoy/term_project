@@ -1,27 +1,46 @@
 import face_recognition
-import numpy as np
-import cv2
+import time
 
-video_capture = cv2.VideoCapture("img/video_vitya.mp4")
-count = 0
+start_time = time.time()
 
-while True:
-    frame_id = int(round(video_capture.get(1)))
-    _, frame = video_capture.read()
-    small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
-    rgb_small_frame = small_frame[:, :, ::-1]
-    first_face_location = face_recognition.face_locations(rgb_small_frame)
-    if len(first_face_location) == 0:
-        continue
-    else:
-        if count < 10:
-            if count == 3 or count == 6 or count == 9:
-                cv2.imwrite(f"img/scr{count}.jpg", frame)
-                print(frame_id)
-                print("face found")
-            count += 1
-        else:
-            break
+# known_vitya_image = face_recognition.load_image_file("img/0_face_img.jpg")
+# vitya_face_encoding = face_recognition.face_encodings(known_vitya_image)[0]
+# print(vitya_face_encoding)
+
+# это дескриптор эталонной фотографии
+known_encodings = [
+    [-0.03423101,  0.03024804,  0.05028335, - 0.06161052, - 0.03439429, - 0.05063938,
+     - 0.08524001, - 0.08298272,  0.19423336, - 0.11838623,  0.20875134, - 0.03071646,
+     - 0.24723807, - 0.09699653, - 0.00769112,  0.08396845, - 0.05114352, - 0.09747565,
+     - 0.03565737, - 0.12710541,  0.02322496,  0.04927729,  0.01847307,  0.03951812,
+     - 0.21033806, - 0.27756453, - 0.09293187, - 0.17441344, - 0.04362555, - 0.11921825,
+     - 0.09682487,  0.11545899, - 0.12512985, - 0.09488257,  0.06003518,  0.09604521,
+     - 0.03837547,  0.03196747,  0.17569011,  0.07934967, - 0.1328668, - 0.01055483,
+     0.00547766, 0.30139795, 0.17433067,  0.00418721,  0.02654396, - 0.05212975,
+     0.17816027, - 0.25521293,  0.08505918,  0.13547508,  0.15712835,  0.05357733,
+     0.16850351, - 0.13749139, - 0.00475303,  0.13971561, - 0.22449626,  0.12349931,
+     0.07361166, - 0.06506804, - 0.11978284, - 0.05825759,  0.2131889,   0.14150575,
+     - 0.16668485, - 0.05707771,  0.17996201, - 0.10942243, - 0.03973091,  0.09381268,
+     - 0.15344085, - 0.19390672, - 0.27677321,  0.05719214,  0.35748476,  0.17011477,
+     - 0.19577995,  0.0312208, - 0.04541194,  0.03930616,  0.05711497,  0.02572842,
+     - 0.09517599,  0.08197531,  0.01016818,  0.05069887,  0.10578115,  0.0127387,
+     - 0.05656563,  0.18493573, - 0.0501667,   0.11327967,  0.0680515,   0.01932988,
+     - 0.09375905, - 0.11677227, - 0.18010956, - 0.0098787,   0.0282058, - 0.12709492,
+     0.01724123,  0.07643861, - 0.16547921,  0.15103269,  0.00079268, - 0.03586937,
+     - 0.06197092,  0.04305221, - 0.09658854,  0.03136184,  0.15022001, - 0.30718541,
+     0.18551902,  0.12297796,  0.04166523,  0.12521121,  0.04317277, - 0.02608111,
+     - 0.02107827, - 0.06208287, - 0.12591809, - 0.11271264,  0.0558213, - 0.01812152,
+     0.06482871, - 0.01523126]
+]
+
+image_to_compare = face_recognition.load_image_file("img/scr9.jpg")
+image_to_compare_encoding = face_recognition.face_encodings(image_to_compare)[0]
+
+
+result = face_recognition.compare_faces(known_encodings, image_to_compare_encoding)
+
+print(result)
+print("--- %s seconds ---" % (time.time() - start_time))
 
 
 

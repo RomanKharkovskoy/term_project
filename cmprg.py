@@ -47,7 +47,7 @@ def save_src(temp):
 def discr_compare(known_enc):
     image_to_compare = face_recognition.load_image_file("images_to_compare/scr9.jpg")  # загружаем фото которое надо сравнить
     image_to_compare_encoding = face_recognition.face_encodings(image_to_compare)[0]  # вычисляем дескриптор
-    result = face_recognition.compare_faces([known_enc], image_to_compare_encoding)  # получаем результат сравнения
+    result = face_recognition.compare_faces([known_enc], image_to_compare_encoding, tolerance=0.5)  # получаем результат сравнения
     return result
 
 def cleaning():

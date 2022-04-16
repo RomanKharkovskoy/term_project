@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="95d75854-ca70-4b4d-bb9b-841c34dbdd7e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../cmprg.py" beforeDir="false" afterPath="$PROJECT_DIR$/../cmprg.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +35,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/venv/Lib/site-packages/face_recognition/api.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../bot.py" />
   </component>
   <component name="ReaderModeSettings">
     <option name="enabled" value="false" />

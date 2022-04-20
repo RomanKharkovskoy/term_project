@@ -1,6 +1,7 @@
 <h1 align="center">AR-профайл с распознаванием лица</h1>
 <h2 align="center">Название проекта</h2>
-[Ссылка на нашего бота)](https://t.me/ProProfiling_bot)
-# Создатели этого проекта
+<a href="https://t.me/ProProfiling_bot">Ссылка на нашего бота)</a>
+<h3 align="center">Создатели проекта</h3>
 Вот они слева направо(PEPEGA):
-![pepega](https://user-images.githubusercontent.com/90906464/161100333-8430cb0c-784a-4fea-a656-0efe0a3706eb.jpg)
+<img>src='https://sun9-3.userapi.com/s/v1/if2/rQLfQDlFQFbsLYkBifo3hjGinIKSAZ33oPKI5xiHtjtNT0xlDX99jrIuybAqmEgO_jGvNWxGohueyspRcyUqceR2.jpg?size=2100x1500&quality=96&type=album'</img>
+

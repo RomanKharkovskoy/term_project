@@ -6,6 +6,7 @@ import time
 def save_src():
     video_capture = cv2.VideoCapture("img/video_vitya.mp4")
     count = 0
+    have_face = False
 
     while True:
         frame_id = int(round(video_capture.get(1)))
@@ -16,6 +17,7 @@ def save_src():
         if len(first_face_location) == 0:
             continue
         else:
+            have_face = True
             if count < 10:
                 if count == 3 or count == 6 or count == 9:
                     cv2.imwrite(f"img/scr{count}.jpg", frame)
@@ -24,6 +26,9 @@ def save_src():
                 count += 1
             else:
                 break
+
+    if have_face == False:
+        print("вас нет")
 
 
 def compare_faces():
@@ -66,9 +71,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-

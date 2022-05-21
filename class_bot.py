@@ -4,24 +4,22 @@ import sqlite3 as sq
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ContentType
 
-from cmprg import cleaning, discr_compare, extracting_faces, save_src
+from face_functions import cleaning, discr_compare, extracting_faces, save_src
 from top_secret import token
 
 
 class DataBase:
     def __init__(self, name):
         self.name = name
-
+        self.con = sq.connect(self.name)
+        self.cur = self.con.cursor()
+        
     def execute_query(self, query):
         con = sq.connect(self.name)
         with con:
             cur = con.cursor()
             cur.execute(query)
             con.commit()
-
-    def selector(self):
-        self.con = sq.connect(self.name)
-        self.cur = self.con.cursor()
 
     def insert_user(self, user_name, photo_discr):
         query = f'INSERT INTO users(user_name, photo_discr) VALUES ("{user_name}", "{photo_discr}")'
@@ -46,6 +44,7 @@ class TelegramNotifier:
         self.create_new_user()
         self.delete_user()
         self.video_machine()
+        self.photo_machine()
 
     def create_welcome(self):
         @self.dp.message_handler(commands=['start', 'help'])
@@ -60,9 +59,9 @@ class TelegramNotifier:
         @self.dp.message_handler(commands=['new'])
         async def create_user(message: types.Message):
             await message.reply('Отправь своё фото, чтобы добавить его в базу данных.')
-            self.work_with_photos()
+            self.upload_photos()
 
-    def work_with_photos(self):
+    def upload_photos(self):
         @self.dp.message_handler(content_types=['photo'])
         async def downloading_faces(message: types.Message):
             destination = f'ideal_images/{message.from_user.username}.jpg'
@@ -82,6 +81,12 @@ class TelegramNotifier:
         async def check_video(message: types.Message):
             await message.reply('Отправь кружок с лицом человеком и я дам ссылку на его телеграмм')
             self.work_with_videos()
+
+    def photo_machine(self):
+        @self.dp.message_handler(commands=['photo'])
+        async def check_photo(message: types.Message):
+            await message.reply('Отправь фото с лицом человека и я дам ссылку на его телеграмм')
+            self.work_with_photos()
     
     def work_with_videos(self):
         @self.dp.message_handler(content_types=[ContentType.VIDEO_NOTE])
@@ -90,16 +95,32 @@ class TelegramNotifier:
             await message.video_note.download(destination_file=destination)
             save_src("temp_video")
             await message.answer('Скачал твоё видео, сейчас сравню лицо с базой данных.')
-            print(self.db.selector())
             for row in self.db.cur.execute('select photo_discr, user_name from users'):
                 self.db.selecting_user()
                 print(row[1])
                 temp = json.loads(row[0])
-                if discr_compare(temp) == [True]:
+                if discr_compare(temp, "images_to_compare/scr9.jpg") == [True]:
                     user = row[1]
                     await message.answer(f'На данном видео @{user}')
                     cleaning()
                     break
+
+    def work_with_photos(self):
+        @self.dp.message_handler(content_types=[ContentType.PHOTO])
+        async def downloading_photo(message: types.Message):
+            destination = f'images_to_compare/temp_photo.jpg'
+            await message.photo[-1].download(destination_file=destination)
+            await message.answer('Скачал твоё фото, сейчас сравню лицо с базой данных.')
+            for row in self.db.cur.execute('select photo_discr, user_name from users'):
+                self.db.selecting_user()
+                print(row[1])
+                temp = json.loads(row[0])
+                if discr_compare(temp, destination) == [True]:
+                    user = row[1]
+                    await message.answer(f'На данном фото @{user}')
+                    break
+            
+
 
 if __name__ == '__main__':
     bot = TelegramNotifier(token, 'db/base.db')

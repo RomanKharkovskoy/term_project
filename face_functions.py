@@ -1,10 +1,9 @@
+from itertools import count
 import json
 import os
-
 import cv2
 import numpy as np
 from PIL import Image
-
 import face_recognition
 
 
@@ -23,29 +22,63 @@ def extracting_faces(img_path, username):
     known_encodings = np.array(face_recognition.face_encodings(known_photo)[0]).tolist()
     return json.dumps(known_encodings)
 
-# Функция, которая вырезает из видео 3 идеальных кадра
-def save_src(temp):
+def frame_count(temp):
     video = f"images_to_compare/{temp}.mp4"
     video_capture = cv2.VideoCapture(video)
-    count = 0
-    have_face = False
-
+    frame_array = []
+    cur_vr = 0
+    max_vr = 0
+    frame_array_cur = []
+    length = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
     while True:
-        frame_id = int(round(video_capture.get(1)))
         _, frame = video_capture.read()
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
         rgb_small_frame = small_frame[:, :, ::-1]
         first_face_location = face_recognition.face_locations(rgb_small_frame)
         if len(first_face_location) == 0:
+            frame_array.append(0)
+            if len(frame_array) == length:
+                break
             continue
         else:
-            have_face = True
-            if count < 10:
-                if count == 3 or count == 6 or count == 9:
-                    cv2.imwrite(f"images_to_compare/scr{count}.jpg", frame)
-                count += 1
-            else:
+            frame_array.append(1)
+            if len(frame_array) == length:
                 break
+            else:
+                continue
+    frame_array_cur.append([0, 0])
+    for x in range(1,len(frame_array)):
+        if frame_array[x-1] == 0 and frame_array[x] == 1:
+            frame_array_cur.append([x, x])
+        if frame_array[x-1] == 1 and frame_array[x] == 0:
+            frame_array_cur[len(frame_array_cur)-1][1] = x-1
+    for x in range(len(frame_array_cur)):
+        cur_vr = frame_array_cur[x][1] - frame_array_cur[x][0]
+        if max_vr < cur_vr:
+            max_vr = cur_vr
+            res = frame_array_cur[x]
+    print(res)
+    fin = res[1] - res[0] + 1
+    return res[0], fin
+
+# Функция, которая вырезает из видео 3 идеальных кадра
+def save_src(temp, res, fin):
+    video = f"images_to_compare/{temp}.mp4"
+    video_capture = cv2.VideoCapture(video)
+    have_face = False
+    den = int(round(fin/3))
+    length = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
+    final = [even_frame * den for even_frame in range(den)]
+    print(final)
+    fr_num = [even_frame + res for even_frame in final]
+    while True:
+        frame_id = int(round(video_capture.get(1)))
+        _, frame = video_capture.read()
+        print(frame_id)
+        if frame_id in fr_num:
+            cv2.imwrite(f"images_to_compare/scr{frame_id}.jpg", frame)
+        if frame_id == length - 1:
+            break
     return have_face
 
 def discr_compare(known_enc, destination):
@@ -60,3 +93,5 @@ def cleaning():
     os.remove('images_to_compare/scr9.jpg')
 
 
+# res, fin = frame_count("temp_video")
+# save_src("temp_video", res, fin)

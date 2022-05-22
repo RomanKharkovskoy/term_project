@@ -8,7 +8,7 @@ from PIL import Image
 import face_recognition
 
 
-# Функция, которая добавляет эталонную фотографию(с ней будет сравниваться видео)
+# Функция, которая добавляет эталонную фотографию(с ней будет сравниваться видео загруженное в ТГ)
 def extracting_faces(img_path, username):
     faces = face_recognition.load_image_file(img_path)
     faces_locations = face_recognition.face_locations(faces)

@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import face_recognition
-
+import time
 
 # Функция, которая добавляет эталонную фотографию(с ней будет сравниваться видео загруженное в ТГ)
 def extracting_faces(img_path, username):
@@ -46,6 +46,7 @@ def frame_count(temp):
                 break
             else:
                 continue
+    # print(frame_array)
     frame_array_cur.append([0, 0])
     for x in range(1,len(frame_array)):
         if frame_array[x-1] == 0 and frame_array[x] == 1:
@@ -57,9 +58,9 @@ def frame_count(temp):
         if max_vr < cur_vr:
             max_vr = cur_vr
             res = frame_array_cur[x]
-    print(res)
-    fin = res[1] - res[0] + 1
-    return res[0], fin
+    # print(res)
+    # print(res[1] - res[0] + 1)
+    return res[0], res[1] - res[0] + 1
 
 # Функция, которая вырезает из видео 3 идеальных кадра
 def save_src(temp, res, fin):
@@ -68,14 +69,14 @@ def save_src(temp, res, fin):
     have_face = False
     den = int(round(fin/3))
     length = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
-    final = [even_frame * den for even_frame in range(den)]
-    print(final)
+    final = [even_frame * den for even_frame in range(3)]
+    # print(final)
     fr_num = [even_frame + res for even_frame in final]
+    # print(fr_num)
     while True:
         frame_id = int(round(video_capture.get(1)))
         _, frame = video_capture.read()
-        print(frame_id)
-        if frame_id in fr_num:
+        if frame_id == fr_num[1]:
             cv2.imwrite(f"images_to_compare/scr{frame_id}.jpg", frame)
         if frame_id == length - 1:
             break
@@ -92,6 +93,8 @@ def cleaning():
     os.remove('images_to_compare/scr6.jpg')
     os.remove('images_to_compare/scr9.jpg')
 
+start_time = time.time()
+a, b = frame_count("temp_video4")
+save_src("temp_video4", a, b)
 
-# res, fin = frame_count("temp_video")
-# save_src("temp_video", res, fin)
+print("--- %s seconds ---" % (time.time() - start_time))

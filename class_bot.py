@@ -4,7 +4,7 @@ import sqlite3 as sq
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ContentType
 
-from face_functions import cleaning, discr_compare, extracting_faces, save_src
+from face_functions import cleaning, discr_compare, extracting_faces, save_src, frame_count
 from top_secret import token
 
 
@@ -95,6 +95,7 @@ class TelegramNotifier:
         async def downloading_videos(message: types.Message):
             destination = f'images_to_compare/temp_video.mp4'
             await message.video_note.download(destination_file=destination)
+            frames,  = 
             save_src("temp_video")
             await message.answer('Скачал твоё видео, сейчас сравню лицо с базой данных.')
             for row in self.db.cur.execute('select photo_discr, user_name from users'):

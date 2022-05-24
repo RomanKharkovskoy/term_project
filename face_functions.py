@@ -84,9 +84,11 @@ def save_src(temp, res, fin):
                 cv2.imwrite(f"images_to_compare/scr{frame_id}.jpg", frame)
             if frame_id == length - 1:
                 break
+        print(fr_num[1])
     else:
         have_face = False
-    return have_face
+    
+    return have_face, fr_num[1]
 
 def discr_compare(known_enc, destination):
     image_to_compare = face_recognition.load_image_file(destination)  # загружаем фото которое надо сравнить
@@ -94,13 +96,10 @@ def discr_compare(known_enc, destination):
     result = face_recognition.compare_faces([known_enc], image_to_compare_encoding, tolerance=0.5)  # получаем результат сравнения
     return result
 
-def cleaning():
-    os.remove('images_to_compare/scr3.jpg')
-    os.remove('images_to_compare/scr6.jpg')
-    os.remove('images_to_compare/scr9.jpg')
+def cleaning(frame):
+    os.remove(f'images_to_compare/scr{frame}.jpg')
 
 # start_time = time.time()
-a, b = frame_count("temp_video")
-save_src("temp_video", a, b)
-
+# a, b = frame_count("temp_video")
+# save_src("temp_video", a, b)
 # print("--- %s seconds ---" % (time.time() - start_time))

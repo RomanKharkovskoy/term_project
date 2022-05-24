@@ -95,17 +95,17 @@ class TelegramNotifier:
         async def downloading_videos(message: types.Message):
             destination = f'images_to_compare/temp_video.mp4'
             await message.video_note.download(destination_file=destination)
-            frames,  = 
-            save_src("temp_video")
+            frames, frame_length = frame_count("temp_video")
+            face_bool, chosen_frame = save_src("temp_video", frames, frame_length)#сделать условие, если face_bool == False То пишем, что на видео не видно лица.
             await message.answer('Скачал твоё видео, сейчас сравню лицо с базой данных.')
             for row in self.db.cur.execute('select photo_discr, user_name from users'):
                 self.db.selecting_user()
                 print(row[1])
                 temp = json.loads(row[0])
-                if discr_compare(temp, "images_to_compare/scr9.jpg") == [True]:
+                if discr_compare(temp, f"images_to_compare/scr{chosen_frame}.jpg") == [True]:
                     user = row[1]
                     await message.answer(f'На данном видео @{user}')
-                    cleaning()
+                    cleaning(chosen_frame)
                     break
 
     def work_with_photos(self):

@@ -8,7 +8,7 @@
 <h2 align="center">Инструкция к пользованию</h2>
 Чтобы оценить все возможности нашего бота, вам понадобится:<br>
 1)Перейти в диалог с нашим ботом, запустив приложение телеграмм:<br>
- <img src="https://sun9-10.userapi.com/s/v1/if2/eja1PoQDJu44y_3ZMRcYPD6fYmynyjrdgM5TUxwEIOuAOx8VxaQIej5OAzbJ3AxmUjwrpqc6pcG0O35OdKJbk-jl.jpg?size=523x439&quality=96&type=album">
+ <img src="https://sun9-80.userapi.com/s/v1/if2/hp-_SWpGgbYCa040WRd7dN4CN-aCCRsTu3u_6vUU-tPdWvU-FzdzrctqIoCgIqxKwXW49HwMBjr4SeFDHOQGbQjZ.jpg?size=484x385&quality=96&type=album">
  2)Следовать инструкциям от бота
  <h3 align="center">Обратная связь</h3>
  Если у вас есть пожелания или замечания к нашему проекту вы можете написать нам на почту:proprofiling@gmail.com

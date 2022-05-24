@@ -28,7 +28,7 @@ def frame_count(temp):
     frame_array = []
     cur_vr = 0
     max_vr = 0
-    frame_array_cur = []
+    frame_array_cur = [[0, 0]]
     length = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
     while True:
         _, frame = video_capture.read()
@@ -46,21 +46,25 @@ def frame_count(temp):
                 break
             else:
                 continue
-    # print(frame_array)
-    frame_array_cur.append([0, 0])
+    frame_array.insert(0, 0)
+    frame_array.insert(len(frame_array), 0)
     for x in range(1,len(frame_array)):
-        if frame_array[x-1] == 0 and frame_array[x] == 1:
+        if (frame_array[x-1] == 0 and frame_array[x] == 1):
             frame_array_cur.append([x, x])
-        if frame_array[x-1] == 1 and frame_array[x] == 0:
+        if (frame_array[x-1] == 1 and frame_array[x] == 0):
             frame_array_cur[len(frame_array_cur)-1][1] = x-1
-    for x in range(len(frame_array_cur)):
-        cur_vr = frame_array_cur[x][1] - frame_array_cur[x][0]
-        if max_vr < cur_vr:
-            max_vr = cur_vr
-            res = frame_array_cur[x]
-    # print(res)
-    # print(res[1] - res[0] + 1)
-    return res[0], res[1] - res[0] + 1
+    if len(frame_array_cur) != 1:
+        for x in range(len(frame_array_cur)):
+            cur_vr = frame_array_cur[x][1] - frame_array_cur[x][0]
+            if max_vr < cur_vr:
+                max_vr = cur_vr
+                res = frame_array_cur[x]
+        res[0] = res[0] - 1
+        res[1] = res[1] - 1
+    else:
+        res = [0, 0]
+    fin = res[1] - res[0] + 1
+    return res, fin
 
 # Функция, которая вырезает из видео 3 идеальных кадра
 def save_src(temp, res, fin):
@@ -70,16 +74,18 @@ def save_src(temp, res, fin):
     den = int(round(fin/3))
     length = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
     final = [even_frame * den for even_frame in range(3)]
-    # print(final)
-    fr_num = [even_frame + res for even_frame in final]
-    # print(fr_num)
-    while True:
-        frame_id = int(round(video_capture.get(1)))
-        _, frame = video_capture.read()
-        if frame_id == fr_num[1]:
-            cv2.imwrite(f"images_to_compare/scr{frame_id}.jpg", frame)
-        if frame_id == length - 1:
-            break
+    fr_num = [even_frame + res[0] for even_frame in final]
+    if fin > 1:
+        have_face = True
+        while True:
+            frame_id = int(round(video_capture.get(1)))
+            _, frame = video_capture.read()
+            if frame_id == fr_num[1]:
+                cv2.imwrite(f"images_to_compare/scr{frame_id}.jpg", frame)
+            if frame_id == length - 1:
+                break
+    else:
+        have_face = False
     return have_face
 
 def discr_compare(known_enc, destination):
@@ -93,8 +99,8 @@ def cleaning():
     os.remove('images_to_compare/scr6.jpg')
     os.remove('images_to_compare/scr9.jpg')
 
-start_time = time.time()
-a, b = frame_count("temp_video4")
-save_src("temp_video4", a, b)
+# start_time = time.time()
+a, b = frame_count("temp_video")
+save_src("temp_video", a, b)
 
-print("--- %s seconds ---" % (time.time() - start_time))
+# print("--- %s seconds ---" % (time.time() - start_time))

@@ -124,7 +124,7 @@ class TelegramNotifier:
             self.upload_photos(username)
 
     def delete_user_name(self):
-        @self.dp.message_handler(content_types='text')
+        @self.dp.message_handler(content_types=['text'])
         async def delete_user(message: types.Message):
             username = message.text
             self.db.delete_user(username)

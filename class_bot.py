@@ -58,7 +58,7 @@ class TelegramNotifier:
                               )
 
     def create_new_user(self):
-        @self.dp.message_handler(commands=['new'])
+        @self.dp.message_handler(commands=['add'])
         async def create_user(message: types.Message):
             await message.reply('Отправь своё фото, чтобы добавить его в базу данных.')
             self.upload_photos()

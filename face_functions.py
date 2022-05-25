@@ -30,6 +30,7 @@ def frame_count(temp):
     max_vr = 0
     frame_array_cur = [[0, 0]]
     length = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
+    print(length)
     while True:
         _, frame = video_capture.read()
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
